@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { lineItems, isConfirmation } from "../data";
 import { User, Briefcase } from 'lucide-react';
+import LineItemTable from './LineItemTable';
 
 const DonDraperAvatar = () => (
     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
@@ -62,23 +63,26 @@ export default function ChatInterface({
                     <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
                   </div>
                 ) : msg.content === "table_output" ? (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
-                      onClick={onToggleLineItems}
-                    >
-                      {showLineItems ? "Hide" : "Show"} <span className="text-xs">▶</span> Ad Server Line Items
-                    </Button>
-                    {showLineItems && (
+                  <div>
+                    <div className="flex items-center gap-2">
                       <Button
                         variant="outline"
                         className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
-                        onClick={handleCopy}
+                        onClick={onToggleLineItems}
                       >
-                        {copied ? "Copied!" : "Copy"}
+                        {showLineItems ? "Hide" : "Show"} <span className="text-xs">▶</span> Ad Server Line Items
                       </Button>
-                    )}
+                      {showLineItems && (
+                        <Button
+                          variant="outline"
+                          className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
+                          onClick={handleCopy}
+                        >
+                          {copied ? "Copied!" : "Copy"}
+                        </Button>
+                      )}
+                    </div>
+                    {showLineItems && <LineItemTable />}
                   </div>
                 ) : (
                   <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
