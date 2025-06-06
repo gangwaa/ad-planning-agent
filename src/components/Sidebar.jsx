@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft, PenSquare, Search, Library, MessageSquare } from "lucide-react";
+import logo from "./logo.png";
 
 export default function Sidebar({ 
     expanded, 
@@ -63,7 +64,10 @@ export default function Sidebar({
     return (
         <div ref={sidebarRef} className={`${commonClasses} ${responsiveClasses} ${expandedClasses}`}>
             <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-gray-800">Don Draper</span>
+                <div className="flex items-center">
+                    <img src={logo} alt="Logo" className="h-8 w-auto" />
+                    <span className="text-lg font-semibold text-gray-800 ml-2">Don Draper</span>
+                </div>
                 <Button variant="ghost" size="icon" onClick={onToggle} className="text-gray-700 hover:bg-gray-200/50 rounded-lg">
                     <ChevronLeft className="h-6 w-6" />
                 </Button>
