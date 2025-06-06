@@ -4,12 +4,12 @@ import { samplePrompts } from "../data";
 
 export default function SamplePrompts({ activePrompt, onPromptClick }) {
   return (
-    <div className="flex gap-3 justify-start items-center rounded-2xl bg-[#e3f1ef] p-4 shadow-sm border border-gray-200 mb-4 text-xs leading-snug overflow-x-auto scroll-smooth">
+    <div className="flex flex-wrap gap-2 justify-center mt-4">
       {samplePrompts.map((prompt, idx) => (
         <Button
           key={idx}
           variant="outline"
-          className={`text-xs px-4 py-2 rounded-2xl whitespace-normal break-words text-center shrink-0 ${activePrompt === idx ? 'bg-[#c2e2db] border-[#3b8570]' : ''}`}
+          className={`text-xs px-3 py-1.5 rounded-full whitespace-normal text-center shrink-0 bg-white/70 border-gray-300 hover:bg-white ${activePrompt === idx ? 'bg-white border-primary text-primary' : 'text-gray-600'}`}
           onClick={() => onPromptClick(prompt, idx)}
         >
           {prompt}

@@ -3,6 +3,19 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { lineItems, isConfirmation } from "../data";
+import { User, Briefcase } from 'lucide-react';
+
+const DonDraperAvatar = () => (
+    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+        <Briefcase className="w-5 h-5 text-primary" />
+    </div>
+);
+
+const UserAvatar = () => (
+    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center ml-3">
+        <User className="w-5 h-5 text-gray-600" />
+    </div>
+);
 
 export default function ChatInterface({
   messages,
@@ -12,7 +25,6 @@ export default function ChatInterface({
   loading,
   showLineItems,
   onToggleLineItems,
-  chatContainerRef,
   bottomRef
 }) {
   const [copied, setCopied] = useState(false);
@@ -30,17 +42,19 @@ export default function ChatInterface({
 
   return (
     <>
-      <div className="flex-1 overflow-y-scroll space-y-4 pt-4" ref={chatContainerRef}>
+      <div className="space-y-4 pt-4">
         {messages.map((msg, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className={`flex items-start ${msg.role === 'user' ? 'justify-end' : ''}`}
           >
-            <div className={`border rounded-xl shadow-sm ${msg.role === "agent" ? "ml-auto max-w-[75%] bg-white border-gray-200" : "mr-auto max-w-[75%] bg-gray-50 border"}`}>
-              <div className={`p-4 whitespace-pre-wrap text-sm leading-snug text-gray-800 ${isConfirmation(msg.content) ? 'bg-green-50 border-l-4 border-green-400' : ''}`}>
-                <div className="text-sm text-gray-600 uppercase tracking-wide mb-1">✧ Neural</div>
+            {msg.role === 'agent' && <DonDraperAvatar />}
+            <div className={`border rounded-xl shadow-sm max-w-[85%] ${msg.role === "agent" ? "bg-white border-gray-200" : "bg-primary text-white border-primary"}`}>
+              <div className={`p-4 whitespace-pre-wrap text-sm leading-snug ${isConfirmation(msg.content) ? 'bg-green-50 border-l-4 border-green-400 text-gray-800' : ''}`}>
+                <div className={`uppercase tracking-wide mb-1 text-xs font-semibold ${msg.role === 'agent' ? 'text-gray-600' : 'text-primary-light'}`}>✧ Don Draper</div>
                 {msg.content === "typing_indicator" ? (
                   <div className="flex space-x-1 animate-pulse">
                     <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
@@ -48,63 +62,30 @@ export default function ChatInterface({
                     <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
                   </div>
                 ) : msg.content === "table_output" ? (
-                  <div className="bg-[#e3f1ef] rounded-xl p-3 border border-gray-300 text-sm">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
+                      onClick={onToggleLineItems}
+                    >
+                      {showLineItems ? "Hide" : "Show"} <span className="text-xs">▶</span> Ad Server Line Items
+                    </Button>
+                    {showLineItems && (
                       <Button
                         variant="outline"
                         className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
-                        onClick={onToggleLineItems}
+                        onClick={handleCopy}
                       >
-                        {showLineItems ? "Hide" : "Show"} <span className="text-xs">▶</span> Ad Server Line Items
+                        {copied ? "Copied!" : "Copy"}
                       </Button>
-                      {showLineItems && (
-                        <Button
-                          variant="outline"
-                          className="text-xs px-3 py-1 rounded-xl border-[#3b8570] text-[#3b8570] flex items-center gap-2"
-                          onClick={handleCopy}
-                        >
-                          {copied ? "Copied!" : "Copy"}
-                        </Button>
-                      )}
-                    </div>
-                    {showLineItems && (
-                      <div className="overflow-x-auto mt-4">
-                        <table className="table-auto w-full text-sm mt-2 border rounded-xl overflow-hidden shadow">
-                          <thead className="bg-gray-100">
-                            <tr>
-                              <th className="border px-2 py-1">Line Item</th>
-                              <th className="border px-2 py-1">Content</th>
-                              <th className="border px-2 py-1">Geo</th>
-                              <th className="border px-2 py-1">Device</th>
-                              <th className="border px-2 py-1">Audience</th>
-                              <th className="border px-2 py-1">Bid CPM</th>
-                              <th className="border px-2 py-1">Daily Cap</th>
-                              <th className="border px-2 py-1">Frequency Cap</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {lineItems.map((item, i) => (
-                              <tr key={i}>
-                                <td className="border px-2 py-1 text-gray-700">{item.name}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.content}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.geo}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.device}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.audience}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.bid}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.cap}</td>
-                                <td className="border px-2 py-1 text-gray-700">{item.freq}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
                     )}
                   </div>
                 ) : (
-                  <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>') }} />
+                  <div dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
                 )}
               </div>
             </div>
+            {msg.role === 'user' && <UserAvatar />}
           </motion.div>
         ))}
         <div ref={bottomRef}></div>
